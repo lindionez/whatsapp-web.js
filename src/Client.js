@@ -748,21 +748,21 @@ class Client extends EventEmitter {
         });
 
         await this.pupPage.evaluate(() => {
-            window.Store.Msg.on('change', (msg) => { window.onChangeMessageEvent(window.WWebJS.getMessageModel(msg)); });
-            window.Store.Msg.on('change:type', (msg) => { window.onChangeMessageTypeEvent(window.WWebJS.getMessageModel(msg)); });
-            window.Store.Msg.on('change:ack', (msg, ack) => { window.onMessageAckEvent(window.WWebJS.getMessageModel(msg), ack); });
-            window.Store.Msg.on('change:isUnsentMedia', (msg, unsent) => { if (msg.id.fromMe && !unsent) window.onMessageMediaUploadedEvent(window.WWebJS.getMessageModel(msg)); });
-            window.Store.Msg.on('remove', (msg) => { if (msg.isNewMsg) window.onRemoveMessageEvent(window.WWebJS.getMessageModel(msg)); });
-            window.Store.Msg.on('change:body change:caption', (msg, newBody, prevBody) => { window.onEditMessageEvent(window.WWebJS.getMessageModel(msg), newBody, prevBody); });
-            window.Store.AppState.on('change:state', (_AppState, state) => { window.onAppStateChangedEvent(state); });
-            window.Store.Conn.on('change:battery', (state) => { window.onBatteryStateChangedEvent(state); });
+            try {window.Store.Msg.on('change', (msg) => { window.onChangeMessageEvent(window.WWebJS.getMessageModel(msg)); }); } catch { console.log('Event: change Error') }
+            try {window.Store.Msg.on('change:type', (msg) => { window.onChangeMessageTypeEvent(window.WWebJS.getMessageModel(msg)); }); } catch { console.log('Event: change:type Error') }
+            try {window.Store.Msg.on('change:ack', (msg, ack) => { window.onMessageAckEvent(window.WWebJS.getMessageModel(msg), ack); }); } catch { console.log('Event: change:ack Error') }
+            try {window.Store.Msg.on('change:isUnsentMedia', (msg, unsent) => { if (msg.id.fromMe && !unsent) window.onMessageMediaUploadedEvent(window.WWebJS.getMessageModel(msg)); }); } catch { console.log('Event: change:isUnsentMedia Error') }
+            try {window.Store.Msg.on('remove', (msg) => { if (msg.isNewMsg) window.onRemoveMessageEvent(window.WWebJS.getMessageModel(msg)); }); } catch { console.log('Event: remove Error') }
+            try {window.Store.Msg.on('change:body change:caption', (msg, newBody, prevBody) => { window.onEditMessageEvent(window.WWebJS.getMessageModel(msg), newBody, prevBody); }); } catch { console.log('Event: change:body change:caption Error') }
+            try {window.Store.AppState.on('change:state', (_AppState, state) => { window.onAppStateChangedEvent(state); }); } catch { console.log('Event: change:state Error') }
+            try {window.Store.Conn.on('change:battery', (state) => { window.onBatteryStateChangedEvent(state); }); } catch { console.log('Event: change:battery Error') }
             // WhatsApp Web renomeou Store.Call para WAWebCallCollection em versões recentes
             const callCollection = (window.Store && window.Store.Call) || (window.Store && window.Store.WAWebCallCollection);
             if (callCollection && typeof callCollection.on === 'function') {
                 callCollection.on('add', (call) => { window.onIncomingCall(call); });
             }
-            window.Store.Chat.on('remove', async (chat) => { window.onRemoveChatEvent(await window.WWebJS.getChatModel(chat)); });
-            window.Store.Chat.on('change:archive', async (chat, currState, prevState) => { window.onArchiveChatEvent(await window.WWebJS.getChatModel(chat), currState, prevState); });
+            try {window.Store.Chat.on('remove', async (chat) => { window.onRemoveChatEvent(await window.WWebJS.getChatModel(chat)); }); } catch { console.log('Event: remove Error') }
+            try {window.Store.Chat.on('change:archive', async (chat, currState, prevState) => { window.onArchiveChatEvent(await window.WWebJS.getChatModel(chat), currState, prevState); }); } catch { console.log('Event: change:archive Error') }
             window.Store.Msg.on('add', (msg) => { 
                 if (msg.isNewMsg) {
                     if(msg.type === 'ciphertext') {
@@ -774,7 +774,7 @@ class Client extends EventEmitter {
                     }
                 }
             });
-            window.Store.Chat.on('change:unreadCount', (chat) => {window.onChatUnreadCountEvent(chat);});
+            try {window.Store.Chat.on('change:unreadCount', (chat) => {window.onChatUnreadCountEvent(chat);});} catch { console.log('Event: change:unreadCount Error')}
 
             if (window.compareWwebVersions(window.Debug.VERSION, '>=', '2.3000.1014111620')) {
                 const module = window.Store.AddonReactionTable;
