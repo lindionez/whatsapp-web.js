@@ -13,7 +13,7 @@
     <br />
 </div>
 
-## ◾ This fork was created to add fixes more quickly to the main branch.
+## This fork was created to add fixes more quickly to the main branch.
 
 ## About
 **A WhatsApp API client that operates via the WhatsApp Web browser.**
@@ -33,6 +33,7 @@ The library launches the WhatsApp Web browser app via Puppeteer, accessing its i
 
 ## Installation
 
+Install the fork: npm i github:lindionez/whatsapp-web.js
 The module is available on [npm][npm] via `npm i whatsapp-web.js`!
 
 > [!NOTE]
