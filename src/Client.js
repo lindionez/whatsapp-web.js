@@ -293,6 +293,9 @@ class Client extends EventEmitter {
             window.AuthStore.Cmd.on('logout', async () => {
                 await window.onLogoutEvent();
             });
+            window.AuthStore.Cmd.on('logout_from_bridge', async () => {
+                await window.onLogoutEvent();
+            });
         });
     }
 
@@ -1024,6 +1027,7 @@ class Client extends EventEmitter {
             sendMediaAsDocument: options.sendMediaAsDocument,
             sendMediaAsHd: options.sendMediaAsHd,
             caption: options.caption,
+            isCaptionByUser: options.caption ? true : false,
             quotedMessageId: options.quotedMessageId,
             parseVCards: options.parseVCards !== false,
             mentionedJidList: options.mentions || [],
