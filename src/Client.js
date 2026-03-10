@@ -984,39 +984,51 @@ class Client extends EventEmitter {
             const { Msg, Chat, WAWebCallCollection } =
                 window.require('WAWebCollections');
             const AppState = window.require('WAWebSocketModel').Socket;
-            Msg.on('change', (msg) => {
-                window.onChangeMessageEvent(window.WWebJS.getMessageModel(msg));
-            });
-            Msg.on('change:type', (msg) => {
-                window.onChangeMessageTypeEvent(
-                    window.WWebJS.getMessageModel(msg),
-                );
-            });
-            Msg.on('change:ack', (msg, ack) => {
-                window.onMessageAckEvent(
-                    window.WWebJS.getMessageModel(msg),
-                    ack,
-                );
-            });
-            Msg.on('change:isUnsentMedia', (msg, unsent) => {
-                if (msg.id.fromMe && !unsent)
-                    window.onMessageMediaUploadedEvent(
+                        try {
+                Msg.on('change', (msg) => {
+                    window.onChangeMessageEvent(window.WWebJS.getMessageModel(msg));
+                });
+            } catch {}
+            try {
+                Msg.on('change:type', (msg) => {
+                    window.onChangeMessageTypeEvent(
                         window.WWebJS.getMessageModel(msg),
                     );
-            });
-            Msg.on('remove', (msg) => {
-                if (msg.isNewMsg)
-                    window.onRemoveMessageEvent(
+                });
+            } catch { }
+            try {
+                Msg.on('change:ack', (msg, ack) => {
+                    window.onMessageAckEvent(
                         window.WWebJS.getMessageModel(msg),
+                        ack,
                     );
-            });
-            Msg.on('change:body change:caption', (msg, newBody, prevBody) => {
-                window.onEditMessageEvent(
-                    window.WWebJS.getMessageModel(msg),
-                    newBody,
-                    prevBody,
-                );
-            });
+                });
+            } catch {}
+            try {
+                Msg.on('change:isUnsentMedia', (msg, unsent) => {
+                    if (msg.id.fromMe && !unsent)
+                        window.onMessageMediaUploadedEvent(
+                            window.WWebJS.getMessageModel(msg),
+                        );
+                });
+            } catch {}
+            try {
+                Msg.on('remove', (msg) => {
+                    if (msg.isNewMsg)
+                        window.onRemoveMessageEvent(
+                            window.WWebJS.getMessageModel(msg),
+                        );
+                });
+            } catch {}
+            try {
+                Msg.on('change:body change:caption', (msg, newBody, prevBody) => {
+                    window.onEditMessageEvent(
+                        window.WWebJS.getMessageModel(msg),
+                        newBody,
+                        prevBody,
+                    );
+                });
+            } catch { }
             AppState.on('change:state', (_AppState, state) => {
                 window.onAppStateChangedEvent(state);
             });
@@ -1033,18 +1045,22 @@ class Client extends EventEmitter {
                     window.onIncomingCall(call);
                 });
             }
-            Chat.on('remove', async (chat) => {
-                window.onRemoveChatEvent(
-                    await window.WWebJS.getChatModel(chat),
-                );
-            });
-            Chat.on('change:archive', async (chat, currState, prevState) => {
-                window.onArchiveChatEvent(
-                    await window.WWebJS.getChatModel(chat),
-                    currState,
-                    prevState,
-                );
-            });
+            try {
+                Chat.on('remove', async (chat) => {
+                    window.onRemoveChatEvent(
+                        await window.WWebJS.getChatModel(chat),
+                    );
+                });
+            } catch {}
+            try {
+                Chat.on('change:archive', async (chat, currState, prevState) => {
+                    window.onArchiveChatEvent(
+                        await window.WWebJS.getChatModel(chat),
+                        currState,
+                        prevState,
+                    );
+                });
+            } catch {}
             Msg.on('add', (msg) => {
                 if (msg.isNewMsg) {
                     if (msg.type === 'ciphertext') {
@@ -1064,9 +1080,11 @@ class Client extends EventEmitter {
                     }
                 }
             });
-            Chat.on('change:unreadCount', (chat) => {
-                window.onChatUnreadCountEvent(chat);
-            });
+            try {
+                Chat.on('change:unreadCount', (chat) => {
+                    window.onChatUnreadCountEvent(chat);
+                });
+            } catch {}
 
             window.WWebJS.injectToFunction(
                 {
