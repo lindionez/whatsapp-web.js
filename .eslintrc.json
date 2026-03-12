@@ -17,5 +17,8 @@
     "parserOptions": {
         "ecmaVersion": 2022
     },
-    "plugins": ["mocha"]
+    "plugins": ["mocha"],
+    "rules": {
+        "no-empty": "off"
+    }
 }

@@ -984,9 +984,11 @@ class Client extends EventEmitter {
             const { Msg, Chat, WAWebCallCollection } =
                 window.require('WAWebCollections');
             const AppState = window.require('WAWebSocketModel').Socket;
-                        try {
+            try {
                 Msg.on('change', (msg) => {
-                    window.onChangeMessageEvent(window.WWebJS.getMessageModel(msg));
+                    window.onChangeMessageEvent(
+                        window.WWebJS.getMessageModel(msg),
+                    );
                 });
             } catch {}
             try {
@@ -995,7 +997,7 @@ class Client extends EventEmitter {
                         window.WWebJS.getMessageModel(msg),
                     );
                 });
-            } catch { }
+            } catch {}
             try {
                 Msg.on('change:ack', (msg, ack) => {
                     window.onMessageAckEvent(
@@ -1021,14 +1023,17 @@ class Client extends EventEmitter {
                 });
             } catch {}
             try {
-                Msg.on('change:body change:caption', (msg, newBody, prevBody) => {
-                    window.onEditMessageEvent(
-                        window.WWebJS.getMessageModel(msg),
-                        newBody,
-                        prevBody,
-                    );
-                });
-            } catch { }
+                Msg.on(
+                    'change:body change:caption',
+                    (msg, newBody, prevBody) => {
+                        window.onEditMessageEvent(
+                            window.WWebJS.getMessageModel(msg),
+                            newBody,
+                            prevBody,
+                        );
+                    },
+                );
+            } catch {}
             AppState.on('change:state', (_AppState, state) => {
                 window.onAppStateChangedEvent(state);
             });
@@ -1053,13 +1058,16 @@ class Client extends EventEmitter {
                 });
             } catch {}
             try {
-                Chat.on('change:archive', async (chat, currState, prevState) => {
-                    window.onArchiveChatEvent(
-                        await window.WWebJS.getChatModel(chat),
-                        currState,
-                        prevState,
-                    );
-                });
+                Chat.on(
+                    'change:archive',
+                    async (chat, currState, prevState) => {
+                        window.onArchiveChatEvent(
+                            await window.WWebJS.getChatModel(chat),
+                            currState,
+                            prevState,
+                        );
+                    },
+                );
             } catch {}
             Msg.on('add', (msg) => {
                 if (msg.isNewMsg) {
@@ -1726,8 +1734,10 @@ class Client extends EventEmitter {
      * @returns {Promise<string>} Id of the joined Chat
      */
     async acceptInvite(inviteCode) {
-        const res = await this.pupPage.evaluate(async inviteCode => {
-            return await (window.require('WAWebGroupInviteJob')).joinGroupViaInvite(inviteCode);
+        const res = await this.pupPage.evaluate(async (inviteCode) => {
+            return await window
+                .require('WAWebGroupInviteJob')
+                .joinGroupViaInvite(inviteCode);
         }, inviteCode);
 
         return res.gid._serialized;
