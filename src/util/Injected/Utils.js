@@ -1015,6 +1015,20 @@ exports.LoadUtils = () => {
         }
 
         res.isBlocked = contact.isContactBlocked;
+        if (!res.isBlocked) {
+            const alt = window
+                .require('WAWebApiContact')
+                .getAlternateUserWid(
+                    window
+                        .require('WAWebWidFactory')
+                        .asUserWidOrThrow(contact.id),
+                );
+            if (alt) {
+                res.isBlocked = !!window
+                    .require('WAWebCollections')
+                    .Blocklist.get(alt);
+            }
+        }
 
         const ContactMethods = window.require('WAWebContactGetters');
         res.isMe = ContactMethods.getIsMe(contact);
