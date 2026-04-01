@@ -198,7 +198,7 @@ declare namespace WAWebJS {
         ): Promise<string>;
 
         /** Cancels an active pairing code session and returns to QR code mode */
-        cancelPairingCode(): Promise<void>
+        cancelPairingCode(): Promise<void>;
 
         /** Force reset of connection state for the client */
         resetState(): Promise<void>;
