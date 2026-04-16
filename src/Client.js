@@ -1020,8 +1020,7 @@ class Client extends EventEmitter {
         );
 
         await this.pupPage.evaluate(() => {
-            const { Msg, Chat, WAWebCallCollection } =
-                window.require('WAWebCollections');
+            const { Msg, Chat } = window.require('WAWebCollections');
             const AppState = window.require('WAWebSocketModel').Socket;
 
             // Enable placeholder message resend (recovery for ciphertext messages)
@@ -1090,13 +1089,31 @@ class Client extends EventEmitter {
                         window.onBatteryStateChangedEvent(state);
                     });
             } catch {}
+            const WAWebCallCollection = window.require('WAWebCallCollection');
             if (
                 WAWebCallCollection &&
                 typeof WAWebCallCollection.on === 'function'
             ) {
-                WAWebCallCollection.on('add', (call) => {
-                    window.onIncomingCall(call);
-                });
+                const mapKey = Object.keys(WAWebCallCollection).find(
+                    (k) => WAWebCallCollection[k] instanceof Map,
+                );
+                const internalCallMap = WAWebCallCollection[mapKey];
+                const originalMapSet =
+                    internalCallMap.set.bind(internalCallMap);
+
+                internalCallMap.set = function (key, value) {
+                    window.onIncomingCall({
+                        id: value.id,
+                        peerJid: value.peerJid,
+                        isVideo: value.isVideo,
+                        isGroup: value.isGroup,
+                        canHandleLocally: value.canHandleLocally,
+                        outgoing: value.outgoing,
+                        webClientShouldHandle: value.webClientShouldHandle,
+                        participants: value.participants,
+                    });
+                    return originalMapSet(key, value);
+                };
             }
             try {
                 Chat.on('remove', async (chat) => {
@@ -1457,7 +1474,7 @@ class Client extends EventEmitter {
                 )
             ) {
                 console.warn(
-                    'Mentions with an array of Contact are now deprecated. See more at https://github.com/pedroslopez/whatsapp-web.js/pull/2166.',
+                    'Mentions with an array of Contact are now deprecated. See more at https://github.com/wwebjssapp-web.js/pull/2166.',
                 );
                 options.mentions = options.mentions.map(
                     (a) => a.id._serialized,
