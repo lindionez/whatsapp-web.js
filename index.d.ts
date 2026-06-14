@@ -198,7 +198,7 @@ declare namespace WAWebJS {
         ): Promise<string>;
 
         /** Cancels an active pairing code session and returns to QR code mode */
-        cancelPairingCode(): Promise<void>
+        cancelPairingCode(): Promise<void>;
 
         /** Force reset of connection state for the client */
         resetState(): Promise<void>;
@@ -211,10 +211,7 @@ declare namespace WAWebJS {
         ): Promise<Message>;
 
         /** Send a reaction to a specific messageId */
-        sendReaction(
-            messageId: string,
-            reaction: string,
-        ): Promise<void>;
+        sendReaction(messageId: string, reaction: string): Promise<void>;
 
         /** Sends a channel admin invitation to a user, allowing them to become an admin of the channel */
         sendChannelAdminInvite(
@@ -1076,6 +1073,7 @@ declare namespace WAWebJS {
         VIDEO = 'video',
         DOCUMENT = 'document',
         STICKER = 'sticker',
+        STICKER_PACK = 'sticker-pack',
         LOCATION = 'location',
         CONTACT_CARD = 'vcard',
         CONTACT_CARD_MULTI = 'multi_vcard',
@@ -1554,6 +1552,8 @@ declare namespace WAWebJS {
         sendVideoAsGif?: boolean;
         /** Send media as sticker */
         sendMediaAsSticker?: boolean;
+        /** Send a MessageMedia array as a sticker pack */
+        sendMediaAsStickerPack?: boolean;
         /** Send media as document */
         sendMediaAsDocument?: boolean;
         /** Send media as quality HD */
@@ -1589,6 +1589,14 @@ declare namespace WAWebJS {
         stickerAuthor?: string;
         /** Sticker categories, if sendMediaAsSticker is true */
         stickerCategories?: string[];
+        /** Sticker pack name, if sendMediaAsStickerPack is true */
+        stickerPackName?: string;
+        /** Sticker pack publisher, if sendMediaAsStickerPack is true */
+        stickerPackPublisher?: string;
+        /** Sticker pack id, if sendMediaAsStickerPack is true */
+        stickerPackId?: string;
+        /** Sticker pack tray icon; if omitted, WhatsApp uses the first sticker, if sendMediaAsStickerPack is true */
+        stickerPackTrayIcon?: MessageMedia | null;
         /** Should the bot send a quoted message without the quoted message if it fails to get the quote?
          * @default true (enabled) */
         ignoreQuoteErrors?: boolean;
@@ -1653,6 +1661,7 @@ declare namespace WAWebJS {
     export type MessageContent =
         | string
         | MessageMedia
+        | MessageMedia[]
         | Location
         | Poll
         | Contact
