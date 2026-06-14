@@ -1,4 +1,12 @@
-const { Client, Location, Poll, List, Buttons, LocalAuth } = require('./index');
+const {
+    Client,
+    Location,
+    Poll,
+    List,
+    Buttons,
+    LocalAuth,
+    MessageMedia,
+} = require('./index');
 
 const client = new Client({
     authStrategy: new LocalAuth(),
@@ -265,6 +273,26 @@ client.on('message', async (msg) => {
                 sendAudioAsVoice: true,
             });
         }
+    } else if (msg.body === '!pack') {
+        // Send an array of MessageMedia as a native sticker pack.
+        const urls = [1, 2, 3, 4].map(
+            (n) =>
+                `https://api.dicebear.com/9.x/shapes/png?seed=wwebjs-${n}&size=512`,
+        );
+        const stickers = await Promise.all(
+            urls.map((url) => MessageMedia.fromUrl(url, { unsafeMime: true })),
+        );
+
+        await client.sendMessage(msg.from, stickers, {
+            sendMediaAsStickerPack: true,
+            stickerPackName: 'WWebJS Pack',
+            stickerPackPublisher: 'whatsapp-web.js',
+            // Optional custom tray icon; defaults to the first sticker:
+            // stickerPackTrayIcon: await MessageMedia.fromUrl(
+            //     'https://wwebjs.dev/images/logo.png',
+            //     { unsafeMime: true },
+            // ),
+        });
     } else if (msg.body === '!isviewonce' && msg.hasQuotedMsg) {
         const quotedMsg = await msg.getQuotedMessage();
         if (quotedMsg.hasMedia) {
