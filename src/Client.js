@@ -1455,7 +1455,7 @@ class Client extends EventEmitter {
                 }
             }
         }
-        
+
         options.groupMentions &&
             !Array.isArray(options.groupMentions) &&
             (options.groupMentions = [options.groupMentions]);
