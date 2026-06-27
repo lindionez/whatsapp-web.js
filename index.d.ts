@@ -241,9 +241,15 @@ declare namespace WAWebJS {
 
         /**
          * Sets the current user's status message
-         * @param status New status message
+         * @param {string} status New status message
+         * @param {string} emoji New emoji to status
+         * @param {number} duration seconds for status duration
          */
-        setStatus(status: string): Promise<void>;
+        setStatus(
+            status: string,
+            emoji: string,
+            duration: number,
+        ): Promise<boolean>;
 
         /**
          * Sets the current user's display name
