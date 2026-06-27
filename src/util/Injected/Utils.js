@@ -207,6 +207,7 @@ exports.LoadUtils = () => {
         if (options.mentionedJidList) {
             if (options.mentionedJidList === '@all') {
                 mentionAll = { nonJidMentions: 1 };
+                options.mentionedJidList = [];
             } else if (Array.isArray(options.mentionedJidList)) {
                 if (options.mentionedJidList.includes('@all')) {
                     options.mentionedJidList = options.mentionedJidList.filter(
