@@ -1473,6 +1473,14 @@ class Client extends EventEmitter {
      */
 
     /**
+     * Audio attached to a sticker.
+     * @typedef {Object} StickerAudio
+     * @property {string} data - Base64-encoded audio data
+     * @property {string} mimetype - Audio mimetype, e.g.: 'audio/ogg; codecs=opus'
+     * @property {number} [duration] - Audio duration in seconds
+     */
+
+    /**
      * Message options.
      * @typedef {Object} MessageSendOptions
      * @property {boolean} [linkPreview=true] - Show links preview. Has no effect on multi-device accounts.
@@ -1497,6 +1505,7 @@ class Client extends EventEmitter {
      * @property {string} [stickerPackPublisher=undefined] - Sets the publisher of the sticker pack, (if sendMediaAsStickerPack is true).
      * @property {string} [stickerPackId=undefined] - Sets the ID of the sticker pack, (if sendMediaAsStickerPack is true).
      * @property {?MessageMedia} [stickerPackTrayIcon=undefined] - Sets the tray icon of the sticker pack; if omitted, WhatsApp uses the first sticker (if sendMediaAsStickerPack is true).
+     * @property {StickerAudio} [stickerAudio=undefined] - Audio to attach to the sticker, (if sendMediaAsSticker is true).
      * @property {boolean} [ignoreQuoteErrors = true] - Should the bot send a quoted message without the quoted message if it fails to get the quote?
      * @property {boolean} [waitUntilMsgSent = false] - Should the bot wait for the message send result?
      * @property {MessageMedia} [media] - Media to be sent
@@ -1523,6 +1532,7 @@ class Client extends EventEmitter {
                 options.quotedMessageId,
                 options.parseVCards,
                 options.isViewOnce,
+                options.stickerAudio,
                 content instanceof Location,
                 content instanceof Contact,
                 content instanceof Buttons,
@@ -1545,6 +1555,7 @@ class Client extends EventEmitter {
                 options.parseVCards,
                 options.isViewOnce,
                 options.sendMediaAsSticker,
+                options.stickerAudio,
                 content instanceof Location,
                 content instanceof Contact,
                 content instanceof Poll,
@@ -1559,6 +1570,27 @@ class Client extends EventEmitter {
                 'The message type is currently not supported for sending in status broadcast,\nthe supported message types are: text, image, gif, audio and video.',
             );
             return null;
+        }
+
+        if (options.stickerAudio) {
+            const { data, mimetype, duration } = options.stickerAudio;
+            if (!options.sendMediaAsSticker) {
+                throw new Error(
+                    'stickerAudio requires sendMediaAsSticker to be true',
+                );
+            }
+            if (typeof data !== 'string' || !data) {
+                throw new Error('stickerAudio.data must be a base64 string');
+            }
+            if (typeof mimetype !== 'string' || !mimetype.startsWith('audio/')) {
+                throw new Error('stickerAudio.mimetype must be an audio mimetype');
+            }
+            if (
+                duration !== undefined &&
+                !(Number.isFinite(duration) && duration > 0)
+            ) {
+                throw new Error('stickerAudio.duration must be a positive number');
+            }
         }
 
         if (options.mentions) {
@@ -1595,6 +1627,7 @@ class Client extends EventEmitter {
             sendVideoAsGif: options.sendVideoAsGif,
             sendMediaAsSticker: options.sendMediaAsSticker,
             sendMediaAsStickerPack: options.sendMediaAsStickerPack,
+            stickerAudio: options.stickerAudio,
             sendMediaAsDocument: options.sendMediaAsDocument,
             sendMediaAsHd: options.sendMediaAsHd,
             caption: options.caption,

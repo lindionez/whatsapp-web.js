@@ -1554,6 +1554,16 @@ declare namespace WAWebJS {
     }
 
     /** Options for sending a message */
+    /** Audio attached to a sticker */
+    export interface StickerAudio {
+        /** Base64-encoded audio data */
+        data: string;
+        /** Audio mimetype, e.g.: 'audio/ogg; codecs=opus' */
+        mimetype: string;
+        /** Audio duration in seconds */
+        duration?: number;
+    }
+
     export interface MessageSendOptions {
         /** Show links preview. Has no effect on multi-device accounts. */
         linkPreview?: boolean;
@@ -1608,6 +1618,8 @@ declare namespace WAWebJS {
         stickerPackId?: string;
         /** Sticker pack tray icon; if omitted, WhatsApp uses the first sticker, if sendMediaAsStickerPack is true */
         stickerPackTrayIcon?: MessageMedia | null;
+        /** Audio to attach to the sticker, if sendMediaAsSticker is true */
+        stickerAudio?: StickerAudio;
         /** Should the bot send a quoted message without the quoted message if it fails to get the quote?
          * @default true (enabled) */
         ignoreQuoteErrors?: boolean;
